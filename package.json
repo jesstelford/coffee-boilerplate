@@ -1,0 +1,38 @@
+{
+  "name": "project-name",
+  "version": "0.0.0-dev",
+  "description": "Project Description",
+  "homepage": "https://github.com/github-user/project-name",
+  "keywords": [],
+  "author": {
+    "name": "Your Name",
+    "email": "Your Email",
+    "url": "Your URI"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/github-user/project-name"
+  },
+  "bugs": "https://github.com/github-user/project-name/issues",
+  "engines": {
+    "node": "0.8.x || 0.9.x || 0.10.x"
+  },
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "coffee-script-redux": "2.0.0-beta7",
+    "commonjs-everywhere": "0.9.x",
+    "mocha": "~1.12.1",
+    "scopedfs": "~0.1.0",
+    "semver": "~2.1.0"
+  },
+  "scripts": {
+    "test": "make test"
+  },
+  "licenses": [
+    {
+      "type": "FreeBSD",
+      "url": "https://github.com/github-user/project-name/blob/master/LICENSE"
+    }
+  ]
+}

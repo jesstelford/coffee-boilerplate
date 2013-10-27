@@ -1,0 +1,7 @@
+test/fixtures
+dist/bundle.js
+lib
+node_modules
+*.swp
+*.vim
+tags
