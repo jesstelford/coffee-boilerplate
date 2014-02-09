@@ -18,7 +18,9 @@
     "node": "0.8.x || 0.9.x || 0.10.x"
   },
   "main": "index.js",
-  "dependencies": {},
+  "dependencies": {
+    "express": "~3.4.8"
+  },
   "devDependencies": {
     "coffee-script-redux": "2.0.0-beta7",
     "commonjs-everywhere": "0.9.x",

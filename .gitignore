@@ -1,5 +1,6 @@
 test/fixtures
-dist/bundle.js
+dist/*.js
+dist/*.map
 lib
 node_modules
 *.swp

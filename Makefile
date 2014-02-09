@@ -1,6 +1,6 @@
 default: dev
 
-SRCDIR = src
+SRCDIR = src/frontend
 LIBDIR = lib
 TESTDIR = test
 DISTDIR = dist
@@ -17,19 +17,20 @@ CJSIFY=node_modules/.bin/cjsify --minify -r $(LIBDIR)
 
 all: build test
 build: $(LIB)
-bundle: $(DISTDIR)/bundle.js
+bundle: $(DISTDIR)/$(MAINMODULE).js
 dev: dev-dep bundle
+	mv $(MAINMODULE).js.map $(DISTDIR)/
 
 $(LIBDIR)/%.js: $(SRCDIR)/%.coffee
 	@mkdir -p "$(@D)"
-	$(COFFEE) <"$<" >"$@"
+	$(COFFEE) -i "$<" >"$@"
 
-$(DISTDIR)/bundle.js: $(LIB)
+$(DISTDIR)/$(MAINMODULE).js: $(LIB)
 	@mkdir -p "$(@D)"
 	$(CJSIFY) -x $(MAINMODULE) $(CJSIFYEXTRAPARAMS) $(shell node -pe 'require("./package.json").main') >"$@"
 
 dev-dep:
-	$(eval CJSIFYEXTRAPARAMS := --inline-source-map)
+	$(eval CJSIFYEXTRAPARAMS := -s $(MAINMODULE).js.map)
 
 .PHONY: phony-dep release test loc clean dev-dep
 phony-dep:
@@ -63,4 +64,7 @@ loc:
 	@wc -l "$(SRCDIR)"/*
 
 clean:
-	@rm -rf "$(LIBDIR)" "$(DISTDIR)"/bundle.js
+	@rm -rf "$(LIBDIR)" "$(DISTDIR)"/$(MAINMODULE).js "$(DISTDIR)"/*.map
+
+dev-server: dev
+	NODE_ENV=development node main.js
