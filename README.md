@@ -1,6 +1,6 @@
 # Coffee Boilerplate
 
-A quickstart [CoffeeScriptRedux](https://github.com/michaelficarra/CoffeeScriptRedux) / [CommonJS](http://www.commonjs.org/) webpage project, using modules from [npm](https://npmjs.org/), powered by [express](http://expressjs.com/), and packaged with [commonjs-everywhere](https://github.com/michaelficarra/commonjs-everywhere).
+A quickstart CoffeeScript node server, designed to serve compiled, minified, and source-mapped CoffeeScript modules to the browser. 
 
 ## Quickstart
 
@@ -9,26 +9,30 @@ Install [nodejs](http://nodejs.org/download/).
 Run the following commands
 
 ```bash
-$ git clone https://github.com/jesstelford/coffee-boilerplate.git
-$ cd coffee-boilerplace
-$ npm install     # Install all the npm dependancies
-$ make dev-server # Build the project, and fire up a minimal server
+$ git clone https://github.com/jesstelford/coffee-boilerplate.git && cd coffee-boilerplace
+$ npm install # Install all the npm dependancies
+$ make        # Build the project, and fire up a minimal server
 ```
 
 Open `http://localhost:3000` in your favourite browser
 
+(*note*: This boilerplate codebase contains no executable code, so you wont see
+anything when you launch that page)
+
 ## Project Structure
 
 ```bash
-├── dist
-│   ├── index.html       # The main entry point to your web page
-│   └── bundle.js        # The bundled coffeescript source (only exists after `make bundle` et al)
-├── main.js              # The basic node server (powered by express)
-├── Makefile             # This Makefile defines the build (and other) tasks
+├── lib                  # Where the compiled backend coffeescript source is placed after `make X`
+├── Makefile             # This Makefile defines the build (and other) tasks (see below for more)
 ├── package.json         # Your project's description
+├── public
+│   ├── index.html       # The main entry point to your web page
+│   └── js               # Where the bundled coffeescript source is placed after `make X`
 ├── src                  # All your source will live here
-│   └── frontend         # Where all your frontend CoffeeScript lives
-│       └── index.coffee # The main CommonJs module, exported to the global namespace as App
+│   ├── backend          # Where all your backend CoffeeScript lives
+│   │   └── index.coffee # The basic node server (powered by express)
+│   └── browser          # Where all your browser CoffeeScript lives
+│       └── App.coffee   # The main CommonJs module, exported to the global namespace
 ├── test                 # Place your mocha test files here
 └── vendor               # Place your non-npm modules here
 ```
@@ -39,16 +43,31 @@ See the `Makefile` to change some of the directories
 
 Available commands are contained in `Makefile`:
 
- * `$ make` / `$ make build`: Compile `src/*.coffee` to `lib/*.js`
- * `$ make bundle`: Build `dist/bundle.js` from `lib/*.js` (calls `$ make build` for you)
- * `$ make dev`: Same as `$ make bundle`, but includes a sourcemap for the minifed js (no map to coffeescript yet)
- * `$ make dev-server`: Start up node with `main.js`, and `NODE_ENV` set to `development`
+ * `$ make run-dev` / `$ make`: Same as `$ make browser-dev && make backend-dev && make node-dev`
+ * `$ make run`: Same as `$ make browser && make backend && make node-stage`
+ * `$ make node-dev`: Boot up the node server in development mode (does **not** recompile any code)
+ * `$ make node-stage`: Boot up the node server in staging mode (does **not** recompile any code)
+ * `$ make browser-dev`: Compile, minify, and source-map browser CoffeeScript 
+ * `$ make browser`: Compile and minify browser CoffeeScript 
+ * `$ make backend-dev`: Compile backend CoffeeScript 
+ * `$ make backend`: Compile backend CoffeeScript 
  * `$ make test`: Run the `test/.coffee` tests through Mocha
- * `$ make clean`: Clean up the built files (`lib/*.js` and `dist/bundle.js`)
+ * `$ make clean`: Clean up the built files and source maps
+ * `$ make loc`: Show the LOC (lines of code) count
+ * `$ make all`: Same as `$ make backend && make browser && make test`
+ * `$ make release-[patch|minor|major]`: Update `package.json` version, create a git tag, then push to `origin`
+
+### Module Exported to the Browser
+
+The `Makefile` defines a variable `BROWSER_MAIN_MODULE` (default: `App`) which influences a number of factors:
+
+ 1. This must match the filename (without the `.coffee` extension) of the file within `src/browser` that contains the module to export
+ 1. This will be used to name the compiled and minified `.js` file dropped into `public/js`
+ 1. This will be used to name the exported object in the browser. For example, if `BROWSER_MAIN_MODULE = App`, then in the module exported to the browser is `window.App`
 
 ## Example
 
-**`dist/index.html`:**
+**`public/index.html`:**
 
 ```html
 <!DOCTYPE html>
@@ -62,7 +81,7 @@ Available commands are contained in `Makefile`:
 </html>
 ```
 
-**`src/frontend/index.coffee`:**
+**`src/browser/App.coffee`:** (where `BROWSER_MAIN_MODULE = App` in `Makefile`)
 
 ```coffeescript
 Dog = require('dog')
@@ -71,7 +90,7 @@ exports.doIt = ->
   doug.sayIt()
 ```
 
-**`src/frontend/dog.coffee`:**
+**`src/browser/dog.coffee`:**
 
 ```coffeescript
 Animal = require('animal')
@@ -79,12 +98,12 @@ module.exports = class Dog extends Animal
   whatISay: "woof!"
 ```
 
-**`src/frontend/animal.coffee`:**
+**`src/browser/animal.coffee`:**
 
 ```coffeescript
 module.exports = class Animal
   sayIt: ->
-    alert @whatISay
+    console.log @whatISay
 ```
 
 ## Project Settings
@@ -98,3 +117,12 @@ Set project-appropriate values in the `package.json` file:
  * `repository`
  * `bugs`
  * `licenses`
+
+## Powered By
+
+ * [CoffeeScriptRedux](https://github.com/michaelficarra/CoffeeScriptRedux)
+ * [CommonJS](http://www.commonjs.org/)
+ * [express](http://expressjs.com/)
+ * [commonjs-everywhere](https://github.com/michaelficarra/commonjs-everywhere)
+ * [npm](https://npmjs.org/)
+ * [node.js](http://nodejs.org/)

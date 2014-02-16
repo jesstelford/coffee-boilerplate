@@ -36,5 +36,3 @@ global.fs = sfs
 global.fixtures = (opts) ->
   do sfs.reset
   sfs.applySync opts
-
-global[k] = v for own k, v of require './'

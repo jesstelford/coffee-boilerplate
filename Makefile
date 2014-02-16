@@ -1,38 +1,58 @@
-default: dev
+default: run-dev
 
-SRCDIR = src/frontend
-LIBDIR = lib
+BROWSER_SRCDIR = src/browser
+BROWSER_DISTDIR = public/js
+BROWSER_MAIN_MODULE = App
+
+BACKEND_SRCDIR = src/backend
+BACKEND_LIBDIR = lib
+
+BINDIR = node_modules/.bin
+
 TESTDIR = test
-DISTDIR = dist
-MAINMODULE = App
 
-SRC = $(shell find "$(SRCDIR)" -name "*.coffee" -type f | sort)
-LIB = $(SRC:$(SRCDIR)/%.coffee=$(LIBDIR)/%.js)
+BACKEND_SRC = $(shell find "$(BACKEND_SRCDIR)" -name "*.coffee" -type f | sort)
+BACKEND_LIB = $(BACKEND_SRC:$(BACKEND_SRCDIR)/%.coffee=$(BACKEND_LIBDIR)/%.js)
+
 TEST = $(shell find "$(TESTDIR)" -name "*.coffee" -type f | sort)
 CJSIFYEXTRAPARAMS =
 
-COFFEE=node_modules/.bin/coffee --js
-MOCHA=node_modules/.bin/mocha --compilers coffee:coffee-script-redux/register -r coffee-script-redux/register -r test-setup.coffee -u tdd -R dot
-CJSIFY=node_modules/.bin/cjsify --minify -r $(LIBDIR)
+COFFEE=$(BINDIR)/coffee --js
+MOCHA=$(BINDIR)/mocha --compilers coffee:coffee-script-redux/register -r coffee-script-redux/register -r test-setup.coffee -u tdd -R dot
+CJSIFY=$(BINDIR)/cjsify --minify --root "$(BROWSER_SRCDIR)"
 
-all: build test
-build: $(LIB)
-bundle: $(DISTDIR)/$(MAINMODULE).js
-dev: dev-dep bundle
-	mv $(MAINMODULE).js.map $(DISTDIR)/
+all: backend browser test
 
-$(LIBDIR)/%.js: $(SRCDIR)/%.coffee
+backend: $(BACKEND_LIB)
+
+backend-dev: backend
+
+browser:
+	@mkdir -p "$(BROWSER_DISTDIR)"
+	@rm -f "$(BROWSER_DISTDIR)/$(BROWSER_MAIN_MODULE).js.map"
+	$(CJSIFY) --export $(BROWSER_MAIN_MODULE) $(CJSIFYEXTRAPARAMS) "$(BROWSER_MAIN_MODULE).coffee" >"$(BROWSER_DISTDIR)/$(BROWSER_MAIN_MODULE).js"
+
+browser-dev: browser-dev-dep browser
+	@mv "$(BROWSER_MAIN_MODULE).js.map" "$(BROWSER_DISTDIR)/"
+
+run-dev: browser-dev backend-dev node-dev
+
+run: browser backend node-stage
+
+node-dev:
+	NODE_ENV=development node "$(BACKEND_LIBDIR)/$(shell node -pe 'require("./package.json").main')"
+
+node-stage:
+	NODE_ENV=staging node "$(BACKEND_LIBDIR)/$(shell node -pe 'require("./package.json").main')"
+
+$(BACKEND_LIBDIR)/%.js: $(BACKEND_SRCDIR)/%.coffee
 	@mkdir -p "$(@D)"
-	$(COFFEE) -i "$<" >"$@"
+	$(COFFEE) --input "$<" >"$@"
 
-$(DISTDIR)/$(MAINMODULE).js: $(LIB)
-	@mkdir -p "$(@D)"
-	$(CJSIFY) -x $(MAINMODULE) $(CJSIFYEXTRAPARAMS) $(shell node -pe 'require("./package.json").main') >"$@"
+browser-dev-dep:
+	$(eval CJSIFYEXTRAPARAMS := --source-map "$(BROWSER_MAIN_MODULE).js.map" --inline-sources)
 
-dev-dep:
-	$(eval CJSIFYEXTRAPARAMS := -s $(MAINMODULE).js.map)
-
-.PHONY: phony-dep release test loc clean dev-dep
+.PHONY: phony-dep release test loc clean dep-dev run-dev run node browser
 phony-dep:
 
 VERSION = $(shell node -pe 'require("./package.json").version')
@@ -43,7 +63,7 @@ release-patch: release
 release-minor: release
 release-major: release
 
-release: build test
+release: all
 	@printf "Current version is $(VERSION). This will publish version $(NEXT_VERSION). Press [enter] to continue." >&2
 	@read nothing
 	node -e "\
@@ -61,10 +81,7 @@ $(TESTDIR)/%.coffee: phony-dep
 	$(MOCHA) "$@"
 
 loc:
-	@wc -l "$(SRCDIR)"/*
+	@wc -l "$(BROWSER_SRCDIR)"/* "$(BACKEND_SRCDIR)"/*
 
 clean:
-	@rm -rf "$(LIBDIR)" "$(DISTDIR)"/$(MAINMODULE).js "$(DISTDIR)"/*.map
-
-dev-server: dev
-	NODE_ENV=development node main.js
+	@rm -rf "$(BACKEND_LIBDIR)" "$(BROWSER_DISTDIR)/$(BROWSER_MAIN_MODULE).js" "$(BROWSER_DISTDIR)/*.map"
