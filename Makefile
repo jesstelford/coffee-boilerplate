@@ -1,7 +1,8 @@
 default: run-dev
 
 BROWSER_SRCDIR = src/browser
-BROWSER_DISTDIR = public/js
+BROWSER_DISTDIR = public
+BROWSER_JSDIR = $(BROWSER_DISTDIR)/js
 BROWSER_MAIN_MODULE = App
 
 BACKEND_SRCDIR = src/backend
@@ -28,12 +29,12 @@ backend: $(BACKEND_LIB)
 backend-dev: backend
 
 browser:
-	@mkdir -p "$(BROWSER_DISTDIR)"
-	@rm -f "$(BROWSER_DISTDIR)/$(BROWSER_MAIN_MODULE).js.map"
-	$(CJSIFY) --export $(BROWSER_MAIN_MODULE) $(CJSIFYEXTRAPARAMS) "$(BROWSER_MAIN_MODULE).coffee" >"$(BROWSER_DISTDIR)/$(BROWSER_MAIN_MODULE).js"
+	@mkdir -p "$(BROWSER_JSDIR)"
+	@rm -f "$(BROWSER_JSDIR)/$(BROWSER_MAIN_MODULE).js.map"
+	$(CJSIFY) --export $(BROWSER_MAIN_MODULE) $(CJSIFYEXTRAPARAMS) "$(BROWSER_MAIN_MODULE).coffee" >"$(BROWSER_JSDIR)/$(BROWSER_MAIN_MODULE).js"
 
 browser-dev: browser-dev-dep browser
-	@mv "$(BROWSER_MAIN_MODULE).js.map" "$(BROWSER_DISTDIR)/"
+	@mv "$(BROWSER_MAIN_MODULE).js.map" "$(BROWSER_JSDIR)/"
 
 run-dev: browser-dev backend-dev node-dev
 
@@ -84,4 +85,4 @@ loc:
 	@wc -l "$(BROWSER_SRCDIR)"/* "$(BACKEND_SRCDIR)"/*
 
 clean:
-	@rm -rf "$(BACKEND_LIBDIR)" "$(BROWSER_DISTDIR)/$(BROWSER_MAIN_MODULE).js" "$(BROWSER_DISTDIR)/*.map"
+	@rm -rf "$(BACKEND_LIBDIR)" "$(BROWSER_JSDIR)/$(BROWSER_MAIN_MODULE).js" "$(BROWSER_JSDIR)/*.map"
