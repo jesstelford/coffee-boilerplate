@@ -1,8 +1,10 @@
 test/fixtures
-dist/*.js
-dist/*.map
-lib
+public/js/*.js
+public/js/*.map
+lib/
+tmp/
 node_modules
 *.swp
+*.swo
 *.vim
 tags

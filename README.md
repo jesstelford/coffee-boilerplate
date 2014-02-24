@@ -1,6 +1,6 @@
 # Coffee Boilerplate
 
-A quickstart CoffeeScript node server, designed to serve compiled, minified, and source-mapped CoffeeScript modules to the browser. 
+A quickstart CoffeeScript node server, designed to serve compiled, minified, and source-mapped CoffeeScript modules to the browser, templated with Handlebars. 
 
 ## Quickstart
 
@@ -22,19 +22,27 @@ anything when you launch that page)
 ## Project Structure
 
 ```bash
-├── lib                  # Where the compiled backend coffeescript source is placed after `make X`
-├── Makefile             # This Makefile defines the build (and other) tasks (see below for more)
-├── package.json         # Your project's description
-├── public
-│   ├── index.html       # The main entry point to your web page
-│   └── js               # Where the bundled coffeescript source is placed after `make X`
-├── src                  # All your source will live here
-│   ├── backend          # Where all your backend CoffeeScript lives
-│   │   └── index.coffee # The basic node server (powered by express)
-│   └── browser          # Where all your browser CoffeeScript lives
-│       └── App.coffee   # The main CommonJs module, exported to the global namespace
-├── test                 # Place your mocha test files here
-└── vendor               # Place your non-npm modules here
+├── lib                # Where the compiled backend coffeescript source is placed after `make X`
+├── Makefile           # This Makefile defines the build (and other) tasks (see below for more)
+├── package.json       # Your project's description
+├── public             # Publically accessible directory
+│   ├── js             # Where the bundled coffeescript source is placed after `make X`
+│   └── vendor         # Place 3rd party assets here so it wont be erased upon compile
+├── src                # All your source will live here
+└── test               # Place your mocha test files here
+```
+
+The `src` directory is structured like so:
+```bash
+├── backend            # Where all your backend code lives
+│   ├── templates
+│   │   └── index.hbs  # The Handlebars template served up by the node server
+│   └── index.coffee   # The basic node server (powered by express)
+└── browser            # Where all your browser code lives
+    ├── templates
+    │   └── test.hbs   # An example Handlebars template rendered browser-side
+    ├── vendor         # CommonJS modules to be included in the browser bundle
+    └── App.coffee     # The main CommonJs module, exported to the global namespace
 ```
 
 See the `Makefile` to change some of the directories
@@ -47,10 +55,10 @@ Available commands are contained in `Makefile`:
  * `$ make run`: Same as `$ make browser && make backend && make node-stage`
  * `$ make node-dev`: Boot up the node server in development mode (does **not** recompile any code)
  * `$ make node-stage`: Boot up the node server in staging mode (does **not** recompile any code)
- * `$ make browser-dev`: Compile, minify, and source-map browser CoffeeScript 
- * `$ make browser`: Compile and minify browser CoffeeScript 
- * `$ make backend-dev`: Compile backend CoffeeScript 
- * `$ make backend`: Compile backend CoffeeScript 
+ * `$ make browser-dev`: Compile, minify, and source-map browser CoffeeScript & Handlebars
+ * `$ make browser`: Compile and minify browser CoffeeScript & Handlebars
+ * `$ make backend-dev`: Compile backend CoffeeScript & Handlebars
+ * `$ make backend`: Compile backend CoffeeScript & Handlebars
  * `$ make test`: Run the `test/.coffee` tests through Mocha
  * `$ make clean`: Clean up the built files and source maps
  * `$ make loc`: Show the LOC (lines of code) count
@@ -67,44 +75,7 @@ The `Makefile` defines a variable `BROWSER_MAIN_MODULE` (default: `App`) which i
 
 ## Example
 
-**`public/index.html`:**
-
-```html
-<!DOCTYPE html>
-<html>
-  <body>
-    <script src="App.js"></script>
-    <script>
-      App.doIt();
-    </script>
-  </body>
-</html>
-```
-
-**`src/browser/App.coffee`:** (where `BROWSER_MAIN_MODULE = App` in `Makefile`)
-
-```coffeescript
-Dog = require('dog')
-exports.doIt = ->
-  doug = new Dog
-  doug.sayIt()
-```
-
-**`src/browser/dog.coffee`:**
-
-```coffeescript
-Animal = require('animal')
-module.exports = class Dog extends Animal
-  whatISay: "woof!"
-```
-
-**`src/browser/animal.coffee`:**
-
-```coffeescript
-module.exports = class Animal
-  sayIt: ->
-    console.log @whatISay
-```
+See the `/src` directory for a basic example
 
 ## Project Settings
 
@@ -121,8 +92,9 @@ Set project-appropriate values in the `package.json` file:
 ## Powered By
 
  * [CoffeeScriptRedux](https://github.com/michaelficarra/CoffeeScriptRedux)
- * [CommonJS](http://www.commonjs.org/)
- * [express](http://expressjs.com/)
- * [commonjs-everywhere](https://github.com/michaelficarra/commonjs-everywhere)
- * [npm](https://npmjs.org/)
- * [node.js](http://nodejs.org/)
+ * [CommonJS](http://www.commonjs.org)
+ * [Commonjs-everywhere](https://github.com/michaelficarra/commonjs-everywhere)
+ * [Express](http://expressjs.com)
+ * [Handlebars](http://handlebarsjs.com)
+ * [node.js](http://nodejs.org)
+ * [npm](https://npmjs.org)
