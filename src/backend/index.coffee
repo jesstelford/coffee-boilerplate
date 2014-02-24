@@ -1,22 +1,21 @@
-fs = require 'fs'
-express = require 'express'
+h5bp = require 'h5bp'
+path = require 'path'
 Handlebars = require 'handlebars'
 require './templates/index'
 
-app = express()
+# Note that the directory tree is relative to the 'BACKEND_LIBDIR' Makefile
+# variable (`lib` by default) directory
+app = h5bp.createServer
+  root: path.join(__dirname, "..", "public")
+  www: false     # Redirect www.example.tld -> example.tld
+  compress: true # gzip responses from the server
 
-app.configure ->
+#if process.env.NODE_ENV is 'development'
+  # Put development environment only routes + code here
 
-  #if process.env.NODE_ENV is 'development'
-    # Put development environment only routes + code here
-  app.get '/', (req, res) ->
+app.get '/', (req, res) ->
 
-    res.send 200, Handlebars.templates['index']({})
-  
-  # Must be the last route so that everything falls back to the dist dir
-  # Note that the directory tree is relative to the 'BACKEND_LIBDIR' Makefile
-  # variable (`lib` by default) directory
-  app.use(express.static(__dirname + '/../public'))
+  res.send 200, Handlebars.templates['index']({})
 
 app.listen 3000
 console.log "Listening at http://localhost:3000"
