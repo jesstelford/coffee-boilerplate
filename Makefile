@@ -51,7 +51,7 @@ browser: $(BROWSER_TMPL_DIST)
 	@mkdir -p "$(BROWSER_JSDIR)"
 	@rm -f "$(BROWSER_JSDIR)/$(BROWSER_MAIN_MODULE).js.map"
 	$(CJSIFY) --export $(BROWSER_MAIN_MODULE) $(CJSIFYEXTRAPARAMS) "$(BROWSER_MAIN_MODULE).coffee" >"$(BROWSER_JSDIR)/$(BROWSER_MAIN_MODULE).js"
-	# Cleanup temporarily compiled handlebars files
+# Cleanup temporarily compiled handlebars files
 	@rm -f $(BROWSER_TMPL_DISTDIR)/*.$(TEMPLATE_EXTENSION).js
 
 browser-dev: browser-dev-dep browser
@@ -78,9 +78,6 @@ $(BACKEND_TMPL_LIBDIR)/%.js: $(BACKEND_TMPL_SRCDIR)/%.$(TEMPLATE_EXTENSION)
 $(BROWSER_TMPL_DISTDIR)/%.$(TEMPLATE_EXTENSION).js: $(BROWSER_TMPL_SRCDIR)/%.$(TEMPLATE_EXTENSION)
 	@mkdir -p "$(@D)"
 	$(HANDLEBARS) "$<" --commonjs="./vendor/handlebars" $(HANDLEBARS_PARAMS) --root="$(BROWSER_TMPL_SRCDIR)" --output "$@"
-
-# $(BROWSER_TMPL_SRCDIR)/%.$(TEMPLATE_EXTENSION):
-# 	$(eval BROWSER_TMPL_ALIASES += --alias $(subst $(BROWSER_SRCDIR),,$@):/../../$(BROWSER_TMPL_DISTDIR)/$*.$(TEMPLATE_EXTENSION).js)
 
 browser-dev-dep:
 	$(eval CJSIFYEXTRAPARAMS := --source-map "$(BROWSER_MAIN_MODULE).js.map" --inline-sources)
