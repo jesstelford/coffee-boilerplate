@@ -39,7 +39,7 @@ CJSIFYEXTRAPARAMS =
 
 COFFEE=$(BINDIR)/coffee --js
 MOCHA=$(BINDIR)/mocha --compilers coffee:coffee-script-redux/register -r coffee-script-redux/register -r test-setup.coffee -u tdd -R dot
-CJSIFY=$(BINDIR)/cjsify --minify --root "$(BROWSER_SRCDIR)"
+CJSIFY=$(BINDIR)/cjsify --root "$(BROWSER_SRCDIR)"
 HANDLEBARS=$(BINDIR)/handlebars
 HANDLEBARS_PARAMS= --extension="$(TEMPLATE_EXTENSION)"
 
@@ -88,6 +88,9 @@ $(BROWSER_TMPL_DISTDIR)/%.$(TEMPLATE_EXTENSION).js: $(BROWSER_TMPL_SRCDIR)/%.$(T
 
 browser-dev-dep:
 	$(eval CJSIFYEXTRAPARAMS := --source-map "$(BROWSER_MAIN_MODULE).js.map" --inline-sources)
+
+browser-dep:
+	$(eval CJSIFYEXTRAPARAMS := --minify)
 
 
 .PHONY: phony-dep release test loc clean dep-dev run-dev run node browser
