@@ -20,6 +20,9 @@ TESTDIR = test
 BACKEND_SRC = $(shell find "$(BACKEND_JS_SRCDIR)" -name "*.coffee" -type f)
 BACKEND_LIB = $(BACKEND_SRC:$(BACKEND_JS_SRCDIR)/%.coffee=$(BACKEND_JS_LIBDIR)/%.js)
 
+BACKEND_JSON = $(shell find "$(BACKEND_JS_SRCDIR)" -name "*.json" -type f)
+BACKEND_JSON_LIB = $(BACKEND_JSON:$(BACKEND_JS_SRCDIR)/%.json=$(BACKEND_JS_LIBDIR)/%.json)
+
 BACKEND_TMPL_SRC = $(shell find "$(BACKEND_TMPL_SRCDIR)" -name "*.$(TEMPLATE_EXTENSION)" -type f)
 BACKEND_TMPL_LIB = $(BACKEND_TMPL_SRC:$(BACKEND_TMPL_SRCDIR)/%.$(TEMPLATE_EXTENSION)=$(BACKEND_TMPL_LIBDIR)/%.js)
 
@@ -42,7 +45,7 @@ HANDLEBARS_PARAMS= --extension="$(TEMPLATE_EXTENSION)"
 
 all: backend browser test
 
-backend: $(BACKEND_TMPL_LIB) $(BACKEND_LIB)
+backend: $(BACKEND_TMPL_LIB) $(BACKEND_LIB) $(BACKEND_JSON_LIB)
 
 backend-dev: backend
 
@@ -74,6 +77,10 @@ $(BACKEND_JS_LIBDIR)/%.js: $(BACKEND_JS_SRCDIR)/%.coffee
 $(BACKEND_TMPL_LIBDIR)/%.js: $(BACKEND_TMPL_SRCDIR)/%.$(TEMPLATE_EXTENSION)
 	@mkdir -p "$(@D)"
 	$(HANDLEBARS) "$<" --commonjs="handlebars" $(HANDLEBARS_PARAMS) --root="$(BACKEND_TMPL_SRCDIR)" --output "$@"
+
+$(BACKEND_JS_LIBDIR)/%.json: $(BACKEND_JS_SRCDIR)/%.json
+	@mkdir -p "$(@D)"
+	@cp "$<" "$@"
 
 $(BROWSER_TMPL_DISTDIR)/%.$(TEMPLATE_EXTENSION).js: $(BROWSER_TMPL_SRCDIR)/%.$(TEMPLATE_EXTENSION)
 	@mkdir -p "$(@D)"
