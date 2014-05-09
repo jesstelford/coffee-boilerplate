@@ -101,7 +101,7 @@ Set project-appropriate values in the `package.json` file:
 
 ## Donations
 
-<img src="http://dogecoin.com/img/dogecoin-300.png" width=100 height=100 align=right />
+<img src="http://dogecoin.com/imgs/dogecoin-300.png" width=100 height=100 align=right />
 Like what I've created? *So do I!* I develop this project in my spare time, free for the community.
 
 If you'd like to say thanks, buy me a beer by **tipping with Dogecoin**: *D7cw4vVBwZRwrZkEw8L7rqt8cX24QCbZxV*
