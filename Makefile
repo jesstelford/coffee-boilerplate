@@ -49,7 +49,9 @@ backend: $(BACKEND_TMPL_LIB) $(BACKEND_LIB) $(BACKEND_JSON_LIB)
 
 backend-dev: backend
 
-browser: $(BROWSER_TMPL_DIST)
+browser: browser-dep browser-all
+	
+browser-all: $(BROWSER_TMPL_DIST)
 	$(eval CJSIFYEXTRAPARAMS += $(BROWSER_TMPL_ALIASES))
 	@mkdir -p "$(BROWSER_JSDIR)"
 	@rm -f "$(BROWSER_JSDIR)/$(BROWSER_MAIN_MODULE).js.map"
@@ -57,7 +59,7 @@ browser: $(BROWSER_TMPL_DIST)
 # Cleanup temporarily compiled handlebars files
 	@rm -f $(BROWSER_TMPL_DISTDIR)/*.$(TEMPLATE_EXTENSION).js
 
-browser-dev: browser-dev-dep browser
+browser-dev: browser-dev-dep browser-all
 	@mv "$(BROWSER_MAIN_MODULE).js.map" "$(BROWSER_JSDIR)/"
 
 run-dev: browser-dev backend-dev node-dev
