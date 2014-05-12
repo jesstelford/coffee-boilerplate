@@ -42,7 +42,17 @@ The `src` directory is structured like so:
     ├── templates
     │   └── test.hbs   # An example Handlebars template rendered browser-side
     ├── vendor         # CommonJS modules to be included in the browser bundle
-    └── App.coffee     # The main CommonJs module, exported to the global namespace
+    └── module         # A directory of modules, each compiled down to a single .js file
+```
+
+The `module` directory is structured like so:
+```bash
+└── App                # The module's directory is also the name exported into global namespace
+    └── index.coffee   # The main CommonJs module, the entry point for this module
+└── SomeModule
+    └── index.coffee
+└── AnotherModule
+    └── index.coffee
 ```
 
 See the `Makefile` to change some of the directories
