@@ -75,13 +75,13 @@ Available commands are contained in `Makefile`:
  * `$ make all`: Same as `$ make backend && make browser && make test`
  * `$ make release-[patch|minor|major]`: Update `package.json` version, create a git tag, then push to `origin`
 
-### Module Exported to the Browser
+### Modules Exported to the Browser
 
-The `Makefile` defines a variable `BROWSER_MAIN_MODULE` (default: `App`) which influences a number of factors:
+All compiled and minified modules are declared by creating a directory within `src/browser/module`, and giving it a CommonJS style `index.coffee` file as the entry point.
 
- 1. This must match the filename (without the `.coffee` extension) of the file within `src/browser` that contains the module to export
- 1. This will be used to name the compiled and minified `.js` file dropped into `public/js`
- 1. This will be used to name the exported object in the browser. For example, if `BROWSER_MAIN_MODULE = App`, then in the module exported to the browser is `window.App`
+The module's directory name will be used to name the compiled and minified `.js` file dropped into `public/js`. For example, `src/browser/module/App/index.coffee` will be compiled into `public/js/App.js`.
+
+The directory name is also used as the exposed global variable for the module. In the above example, if you included `public/js/App.js` into the page, it would expose the variable `window.App`.
 
 ## Example
 
