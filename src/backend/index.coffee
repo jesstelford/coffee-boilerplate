@@ -18,7 +18,6 @@ app = h5bp.createServer
 
 app.get '/', (req, res) ->
 
-  a = b * 2
   res.send 200, Handlebars.templates['index']({})
 
 
