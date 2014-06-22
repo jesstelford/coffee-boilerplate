@@ -23,6 +23,7 @@ anything when you launch that page)
 
 ```bash
 ├── lib                # Where the compiled backend coffeescript source is placed after `make X`
+├── log                # Winston will log here by default in development mode
 ├── Makefile           # This Makefile defines the build (and other) tasks (see below for more)
 ├── package.json       # Your project's description
 ├── public             # Publically accessible directory
@@ -83,6 +84,27 @@ The module's directory name will be used to name the compiled and minified `.js`
 
 The directory name is also used as the exposed global variable for the module. In the above example, if you included `public/js/App.js` into the page, it would expose the variable `window.App`.
 
+### Logging
+
+[winston](https://github.com/flatiron/winston) powers the logging, extended to
+report errors in their own file (`application-error.log`) along side the more
+complete `application.log`.
+
+See `src/backend/index.coffee` for examples of logging.
+
+The output of the logging is determined by the following environment variables:
+
+**`NODE_ENV`**
+ * `development` (default): will send all logs to the console
+ * anything else: will send all logs to a file. See `LOG_DIR` below
+
+**`LOG_DIR`**
+ * empty (default): will create `./log` and save logs there
+ * anything else: will create the specified directory and save logs there (eg;
+   `/var/log/my_app` will save logs to
+   `/var/log/my_app/application[-error].log`)
+
+
 ## Example
 
 See the `/src` directory for a basic example
@@ -101,6 +123,7 @@ Set project-appropriate values in the `package.json` file:
 
 ## Powered By
 
+ * [winston](https://github.com/flatiron/winston)
  * [CoffeeScriptRedux](https://github.com/michaelficarra/CoffeeScriptRedux)
  * [CommonJS](http://www.commonjs.org)
  * [Commonjs-everywhere](https://github.com/michaelficarra/commonjs-everywhere)

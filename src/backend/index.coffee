@@ -1,5 +1,7 @@
 h5bp = require 'h5bp'
 path = require 'path'
+logger = require "#{__dirname}/logger"
+
 Handlebars = require 'handlebars'
 require './templates/index'
 
@@ -18,4 +20,4 @@ app.get '/', (req, res) ->
   res.send 200, Handlebars.templates['index']({})
 
 app.listen 3000
-console.log "Listening at http://localhost:3000"
+logger.info "STARTUP: Listening on http://localhost:3000"
