@@ -7,7 +7,7 @@ BROWSER_JSDIR = $(BROWSER_DISTDIR)/js
 BROWSER_TMPL_SRCDIR = $(BROWSER_SRCDIR)/templates
 BROWSER_TMPL_DISTDIR = tmp/templates
 
-BROWSER_MODULES = $(shell find "$(BROWSER_MODULEDIR)" -name "index.coffee" -type f -depth 2)
+BROWSER_MODULES = $(shell find "$(BROWSER_MODULEDIR)" -maxdepth 2 -name "index.coffee" -type f)
 BROWSER_LIB = $(BROWSER_MODULES:$(BROWSER_MODULEDIR)/%/index.coffee=$(BROWSER_JSDIR)/%.js)
 SOURCE_MAPS = ""
 
